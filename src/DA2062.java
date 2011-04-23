@@ -23,9 +23,6 @@ public class DA2062 extends XFDLDocument {
 	public static String DA2062_FIELD_PUBDATE = "PUBDATE";
 	public static String DA2062_FIELD_QUANTITY = "QUANTITY";
 	
-	private static String DA2062_QUERY_NEXT = "./next/text()";
-	private static String DA2062_QUERY_PREVIOUS = "./previous/text()";
-	
 	private static final String FORM_NUMBER = "2062";
 		
 	public DA2062(String inputFile) throws IOException,
@@ -93,9 +90,9 @@ public class DA2062 extends XFDLDocument {
 			this.setFieldValue(newSID.toString(), "");
 			
 			
-			Node next = (Node)xPath.evaluate(DA2062_QUERY_NEXT, 
+			Node next = (Node)xPath.evaluate(XFDL_QUERY_NEXT, 
 					newFields.item(x), XPathConstants.NODE);
-			Node previous = (Node)xPath.evaluate(DA2062_QUERY_PREVIOUS, 
+			Node previous = (Node)xPath.evaluate(XFDL_QUERY_PREVIOUS, 
 					newFields.item(x), XPathConstants.NODE);
 			
 			next.setNodeValue(updateNextPreviousField(next, pageLetter));

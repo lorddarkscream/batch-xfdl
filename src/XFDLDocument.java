@@ -35,15 +35,14 @@ public class XFDLDocument {
 	protected String XFDL_ATTRIBUTE_SID = "sid";
 	protected String XFDL_ATTRIBUTE_FORMNUMBER = "number";
 	
+	protected static String XFDL_QUERY_NEXT = "./next/text()";
+	protected static String XFDL_QUERY_PREVIOUS = "./previous/text()";
+	
 	protected static final String QUERY_FORM_NUMBER = 
 		"/XFDL/globalpage/global/xmlmodel/instances/instance" +
 				"/form_metadata/title/documentnbr/@number";
 
-		//"/globalpage/global/xmlmodel/instances/xforms:instance" + 
-		//"/form_metadata/title/documentnbr[number]";
-	
-	//private String XPATH_QUERRY_TEXT_NODE = "/text()";
-	
+
 	protected Document doc;
 	private String fileLocation;
 	
