@@ -8,13 +8,6 @@ public class BatchXFDL {
 		 
 			try {	
 			
-				/**
-				DA2062 hr = new DA2062("/Users/andy/Documents/workspace/Batch_XFDL/XFDLFiles/HandReceipt.xfdl");
-				hr.addPage();
-				//hr.printFields();
-				hr.saveFile("/Users/andy/Documents/workspace/Batch_XFDL/XFDLFiles/withThreePages.xfdl", false);
-				*/
-				
 				//Display Main Window
 				MainWindowControl controller = new MainWindowControl();
 				MainWindow view = new MainWindow(controller);

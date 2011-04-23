@@ -11,8 +11,12 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.xml.sax.SAXException;
 
+import java.awt.Component;
+import java.awt.Cursor;
 
-public class DA2062TaskController implements java.awt.event.ActionListener  {
+
+
+class DA2062TaskController implements java.awt.event.ActionListener  {
 
 	private DA2062TaskPane view;
 	
@@ -35,6 +39,10 @@ public class DA2062TaskController implements java.awt.event.ActionListener  {
 		} else if (arg0.getActionCommand() == DA2062TaskPane.COMMAND_EXECUTE) {
 			
 			try {
+				
+				//Set mouse cursor to busy
+				view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+				
 				//open the file
 				DA2062 form = new DA2062(view.sourceFile.getText());
 				
@@ -46,11 +54,11 @@ public class DA2062TaskController implements java.awt.event.ActionListener  {
 				}
 				
 				//save to the specified location
-				String destination;
+				//String destination;
 				File f = new File(view.sourceFile.getText()); 
 				form.saveFile(
 						new File(f.getParent() + 
-								//File.pathSeparatorChar + 
+								File.separator +
 								view.outputFileName.getText()).getPath(),
 						false);
 				JOptionPane.showMessageDialog(view,
@@ -70,6 +78,8 @@ public class DA2062TaskController implements java.awt.event.ActionListener  {
 				JOptionPane.showMessageDialog(view, "Error transforming XML.", "Transformation Exception", JOptionPane.ERROR_MESSAGE);
 			} catch (InvalidFormException err) {
 				JOptionPane.showMessageDialog(view, "This document does not appear to be a valid DA2062", "Invalid Document Exception", JOptionPane.ERROR_MESSAGE);
+			} finally {
+				view.setCursor(Cursor.getDefaultCursor());
 			}
 			
 		}
