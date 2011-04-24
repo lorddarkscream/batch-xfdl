@@ -191,7 +191,6 @@ public class XFDLDocument {
 	{
 		try{
 			XPath xPath = XPathFactory.newInstance().newXPath();
-			xPath.setNamespaceContext(new XFDLNamespaceContext());
 			
 			Node result = (Node)xPath.evaluate(QUERY_FORM_NUMBER, doc, XPathConstants.NODE);
 			if(result != null) {
