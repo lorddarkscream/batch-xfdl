@@ -1,19 +1,26 @@
-import java.awt.Frame;
-import java.awt.BorderLayout;
-import java.awt.Panel;
-import java.awt.Label;
-import java.awt.List;
 
-public class MainWindow extends Frame {
+import java.awt.BorderLayout;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
+public class MainWindow extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -3880026026104218593L;
 	
-	public List formList;
-	public List taskList;
-	public Panel actionContent;
+	public JList formList;
+	public JList taskList;
+	public DefaultListModel formListModel;
+	public DefaultListModel taskListModel;
+	public JPanel actionContent;
 
 	public MainWindow(MainWindowControl control) 
 	{
@@ -26,33 +33,52 @@ public class MainWindow extends Frame {
 		this.addWindowListener(control);
 		
 		//Panel for task selection pane
-		Panel taskPane = new Panel(new BorderLayout());
+		JPanel taskPane = new JPanel(new BorderLayout());
 		this.add(taskPane, BorderLayout.WEST);
 		
 		//Form Selection
-		Panel formSelectPanel = new Panel(new BorderLayout());
+		JPanel formSelectPanel = new JPanel(new BorderLayout());
 		taskPane.add(formSelectPanel, BorderLayout.NORTH);
-		Label forms = new Label();
+		JLabel forms = new JLabel();
 		forms.setText("Forms:");
 		formSelectPanel.add(forms, BorderLayout.NORTH);
 		
 		//list of available forms
-		formList = new List();
-		formList.setName(MainWindowControl.COMMAND_SELECT_FORM);
-		formList.add(MainWindowControl.FORM_CHOICE_DA2062);
-		formList.addItemListener(control);
+		formListModel = new DefaultListModel();
+		formListModel.addElement(MainWindowControl.FORM_CHOICE_DA1594);
+		formListModel.addElement(MainWindowControl.FORM_CHOICE_DA2062);
 		
-		formSelectPanel.add(formList, BorderLayout.CENTER);
+		formList = new JList(formListModel);
+		formList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		formList.setLayoutOrientation(JList.VERTICAL);
+		formList.setName(MainWindowControl.COMMAND_SELECT_FORM);
+		
+		formList.addListSelectionListener(control);
+		
+		JScrollPane formListScroll = new JScrollPane(formList);
+		formListScroll.setVerticalScrollBarPolicy(
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		formSelectPanel.add(formListScroll, BorderLayout.CENTER);
 		
 		//Task Selection
-		Panel formTasksPanel = new Panel(new BorderLayout());
+		JPanel formTasksPanel = new JPanel(new BorderLayout());
 		taskPane.add(formTasksPanel, BorderLayout.CENTER);
 		
-		formTasksPanel.add(new Label("Tasks:"), BorderLayout.NORTH);
+		formTasksPanel.add(new JLabel("Tasks:"), BorderLayout.NORTH);
 		
-		taskList = new List();
-		taskList.addItemListener(control);
-		formTasksPanel.add(taskList, BorderLayout.CENTER);
+		taskListModel = new DefaultListModel();
+		taskList = new JList(taskListModel);
+		taskList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		taskList.setLayoutOrientation(JList.VERTICAL);
+		taskList.setName(MainWindowControl.COMMAND_SELECT_TASK);
+		taskList.addListSelectionListener(control);
+		
+		JScrollPane taskListScroll = new JScrollPane(taskList);
+		taskListScroll.setVerticalScrollBarPolicy(
+				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		formTasksPanel.add(taskListScroll, BorderLayout.CENTER);
 		
 		this.pack();
 	}

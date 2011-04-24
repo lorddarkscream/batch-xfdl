@@ -1,3 +1,4 @@
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -11,23 +12,32 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.xml.sax.SAXException;
 
-import java.awt.Component;
-import java.awt.Cursor;
 
+public class DA1594AddPageController implements AddPageTaskController {
 
-
-class DA2062TaskController implements java.awt.event.ActionListener  {
-
-	private DA2062TaskPane view;
+private static AddPageTaskPane view;
+private static final String FORM_NAME = "DA Form 1594";
 	
-	public DA2062TaskController(DA2062TaskPane view) {
-		this.view = view;
+	public DA1594AddPageController() {
+		
 	}
 	
+	public static DA1594AddPageController factory() {
+		DA1594AddPageController result = new DA1594AddPageController();
+		return result;
+	}
+	
+	public void setTaskPane(AddPageTaskPane taskPane) {
+		view = taskPane;
+	}
+	
+	public String getFormName() {
+		return FORM_NAME;
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getActionCommand() == DA2062TaskPane.COMMAND_BROWSE) {
+		if(arg0.getActionCommand() == AddPageTaskPane.COMMAND_BROWSE) {
 			
 			final JFileChooser fc = new JFileChooser();
 			fc.setFileFilter(new XFDLFileFilter());
@@ -36,7 +46,7 @@ class DA2062TaskController implements java.awt.event.ActionListener  {
 			if(retVal == JFileChooser.APPROVE_OPTION) {
 				view.sourceFile.setText(fc.getSelectedFile().getAbsolutePath());
 			}
-		} else if (arg0.getActionCommand() == DA2062TaskPane.COMMAND_EXECUTE) {
+		} else if (arg0.getActionCommand() == AddPageTaskPane.COMMAND_EXECUTE) {
 			
 			try {
 				
@@ -44,7 +54,7 @@ class DA2062TaskController implements java.awt.event.ActionListener  {
 				view.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 				
 				//open the file
-				DA2062 form = new DA2062(view.sourceFile.getText());
+				DA1594 form = new DA1594(view.sourceFile.getText());
 				
 				//call the add pages command the appropriate number of times
 				SpinnerNumberModel snm = (SpinnerNumberModel)view.numPages.getModel();
@@ -77,7 +87,7 @@ class DA2062TaskController implements java.awt.event.ActionListener  {
 			} catch (TransformerException err) {
 				JOptionPane.showMessageDialog(view, "Error transforming XML.", "Transformation Exception", JOptionPane.ERROR_MESSAGE);
 			} catch (InvalidFormException err) {
-				JOptionPane.showMessageDialog(view, "This document does not appear to be a valid DA2062", "Invalid Document Exception", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view, "This document does not appear to be a valid DA1594", "Invalid Document Exception", JOptionPane.ERROR_MESSAGE);
 			} finally {
 				view.setCursor(Cursor.getDefaultCursor());
 			}
@@ -86,4 +96,6 @@ class DA2062TaskController implements java.awt.event.ActionListener  {
 		
 	}
 
+
+	
 }
