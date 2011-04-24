@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Listing of planned and requested features.
 
 = Introduction =
 
