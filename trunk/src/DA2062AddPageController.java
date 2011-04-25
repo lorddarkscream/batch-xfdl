@@ -81,18 +81,41 @@ class DA2062AddPageController implements AddPageTaskController  {
 						JOptionPane.PLAIN_MESSAGE);
 				
 			} catch (IOException err) {
-				JOptionPane.showMessageDialog(view, "Error reading or writing the file from disk.", "I/O Exception", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view, 
+						"Error reading or writing the file from disk.", 
+						"I/O Exception", 
+						JOptionPane.ERROR_MESSAGE);
 			} catch (ParserConfigurationException err) {
-				JOptionPane.showMessageDialog(view, "Error parsing XML data", "Parser Exception", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view, 
+						"Error parsing XML data", 
+						"Parser Exception", 
+						JOptionPane.ERROR_MESSAGE);
 			} catch (SAXException err) {
-				JOptionPane.showMessageDialog(view, "Error processing XML.", "SAX Exception", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view, "Error processing XML.", 
+						"SAX Exception", 
+						JOptionPane.ERROR_MESSAGE);
 			} catch (XPathExpressionException err) {
-				JOptionPane.showMessageDialog(view, "Error searching document.", "XPath Exception", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view, 
+						"Error searching document.", 
+						"XPath Exception", 
+						JOptionPane.ERROR_MESSAGE);
 			} catch (TransformerException err) {
-				JOptionPane.showMessageDialog(view, "Error transforming XML.", "Transformation Exception", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(view, 
+						"Error transforming XML.", 
+						"Transformation Exception", 
+						JOptionPane.ERROR_MESSAGE);
 			} catch (InvalidFormException err) {
-				JOptionPane.showMessageDialog(view, "This document does not appear to be a valid DA2062", "Invalid Document Exception", JOptionPane.ERROR_MESSAGE);
-			} finally {
+				JOptionPane.showMessageDialog(view, 
+						"This document does not appear to be a valid DA2062", 
+						"Invalid Document Exception", 
+						JOptionPane.ERROR_MESSAGE);
+			} catch (InvalidFieldException err) {
+				JOptionPane.showMessageDialog(view, 
+						"Unable to find a specified field while " +
+						"searching the document.  This may be an invalid DA2062", 
+						"Invalid Field Exception",
+						JOptionPane.ERROR_MESSAGE);
+			}finally {
 				view.setCursor(Cursor.getDefaultCursor());
 			}
 			

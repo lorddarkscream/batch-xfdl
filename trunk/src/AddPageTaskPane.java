@@ -35,9 +35,9 @@ public class AddPageTaskPane extends JPanel {
 		this.add(superContainer, BorderLayout.NORTH);
 		
 		//Task Label
-		superContainer.add(new JLabel("<html><b><u><font size=24>Add Pages to "
+		superContainer.add(new JLabel("<html><h1>Add Pages to "
 				+ control.getFormName() 
-				+ "</font></u></b></html>"), 
+				+ "</h1></html>"), 
 				BorderLayout.NORTH);
 				
 		//Labels Panel

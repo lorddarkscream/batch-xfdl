@@ -1,4 +1,4 @@
-import java.io.IOException;
+ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPath;
@@ -44,9 +44,13 @@ public class DA2062 extends XFDLDocument {
 	
 	/**
 	 * Adds an additional page to the 2062
-	 * @throws XPathExpressionException
+	 * @throws XPathExpressionException XPath error while searching for
+	 * 		specified field.
+	 * @throws InvalidFieldException Unable to locate specified field
+	 * 		in document.  Should only occur if the format of the 
+	 * 		document has changed or it is not a standard DA2062. 
 	 */
-	public void addPage() throws XPathExpressionException {
+	public void addPage() throws XPathExpressionException, InvalidFieldException {
 		//get the second page of the document
 		NodeList pages = doc.getElementsByTagName(XFDL_ELEMENT_PAGE);
 		Node pageTwo = pages.item(1);
@@ -138,4 +142,118 @@ public class DA2062 extends XFDLDocument {
 		
 		return val.toString();
 	}
+
+	/**
+	 * Sets the To Field of the 2062
+	 * @param to Value for the To Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		to field.
+	 * @throws InvalidFieldException Unable to find the To field in document.
+	 * 		Should only occur if document is not a standard DA2062 or standard
+	 * 		has changed. 
+	 */
+	public void setTo(String to) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_TO, to);
+	}
+	
+	/**
+	 * Sets the From Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		From Field.
+	 * @throws InvalidFieldException Unable to find the From field in document.
+	 * 		Should only occur if document is not a standard DA2062 or standard
+	 * 		has changed.
+	 */
+	public void setFrom(String from) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FILED_FROM, from);
+	}
+	
+	
+	/**
+	 * Sets the Receipt Number Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		RECPTNR.
+	 * @throws InvalidFieldException Unable to find the RECPTNR field in document.
+	 * 		Should only occur if document is not a standard DA2062 or standard
+	 * 		has changed.
+	 */
+	public void setReceiptNumber(String receptnr) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_RECPTNR, receptnr);
+	}
+	
+	/**
+	 * Sets the End Items Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		ENDITMS field.
+	 * @throws InvalidFieldException Unable to find the ENDITMS field in 
+	 * 		document.  Should only occur if document is not a standard 
+	 * 		DA2062 or standard has changed.
+	 */
+	public void setEndItem(String enditems) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_ENDITMS, enditems);
+	}
+	
+	/**
+	 * Sets the Item Description Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		ITEMDES.
+	 * @throws InvalidFieldException Unable to find the Item Description field 
+	 * 		in document. Should only occur if document is not a standard 
+	 * 		DA2062 or standard has changed.
+	 */
+	public void setItemDescription(String itemdes) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_ITEMDES, itemdes);
+	}
+	
+	/**
+	 * Sets the Publication Number Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		PUBNR.
+	 * @throws InvalidFieldException Unable to find the Publication Number 
+	 * 		field in document. Should only occur if document is not a 
+	 * 		standard DA2062 or standard	has changed.
+	 */
+	public void setPublicationNumber(String pubnr) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_PUBNR, pubnr);
+	}
+	
+	/**
+	 * Sets the Publication Date Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		PUBDATE.
+	 * @throws InvalidFieldException Unable to find the Publication Date 
+	 * 		field in document. Should only occur if document is not a 
+	 * 		standard DA2062 or standard	has changed.
+	 */
+	public void setPublicationDate(String pubdate) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_PUBDATE, pubdate);
+	}
+
+	/**
+	 * Sets the Quantity Field of the 2062
+	 * @param from Value for the From Field
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		QUANTITY.
+	 * @throws InvalidFieldException Unable to find the Quantity 
+	 * 		field in document. Should only occur if document is not a 
+	 * 		standard DA2062 or standard	has changed.
+	 */
+	public void setQuantity(String pubdate) 
+	throws XPathExpressionException, InvalidFieldException {
+		super.setFieldValue(DA2062_FIELD_PUBDATE, pubdate);
+	}
+
 }

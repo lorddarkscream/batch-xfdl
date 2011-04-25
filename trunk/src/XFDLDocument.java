@@ -156,18 +156,33 @@ public class XFDLDocument {
 	 * Modifies specified node with new value
 	 * @param sid SID of Node to be modified
 	 * @param value New value for specified field
-	 * @throws XPathExpressionException 
+	 * @throws XPathExpressionException Throw if there is an XPath error 
+	 * 		while searching for the field. 
+	 * @throws InvalidFieldException Thrown if the requested field 
+	 * 		cannot be found.
 	 */
-	public void setFieldValue(String sid, String value) throws XPathExpressionException {
+	public void setFieldValue(String sid, String value) throws XPathExpressionException, InvalidFieldException {
+		
+		Node resultNode;
+		
 		//get the value node
+		try {
 		XPath xPath = XPathFactory.newInstance().newXPath();
-		Node resultNode = (Node)xPath.evaluate(
+		resultNode = (Node)xPath.evaluate(
 				buildFieldValueQuery(sid), 
 				doc, 
 				XPathConstants.NODE);
+		}
+		catch (XPathExpressionException xpee) {
+			throw new XPathExpressionException("Error while retriving node: " + sid);
+		}
 		
-		//check for current text
-		resultNode.setTextContent(value);	
+		if(resultNode != null) {
+			//check for current text
+			resultNode.setTextContent(value);
+		} else {
+			throw new InvalidFieldException("Unable to locate requested field for modification");
+		}
 	}
 	
 	/**
@@ -177,11 +192,12 @@ public class XFDLDocument {
 	 * @return String representation of an XPath Query for value of given 
 	 * field 
 	 */
-	private String buildFieldValueQuery(String sid) 
+	protected String buildFieldValueQuery(String sid) 
 	{
 		return "//field[@" + XFDL_ATTRIBUTE_SID + "='" + sid + "']/value";
 	}
-	
+
+
 	/***
 	 * Locates the Document Number information in the file and returns the form number.
 	 * @return File's self-declared number.
