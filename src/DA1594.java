@@ -48,9 +48,13 @@ public class DA1594 extends XFDLDocument {
 	
 	/**
 	 * Adds an additional page to the 1594
-	 * @throws XPathExpressionException
+	 * @throws XPathExpressionException Error in XPath while searching for the
+	 * 		to field.
+	 * @throws InvalidFieldException Unable to find the To field in document.
+	 * 		Should only occur if document is not a standard DA1594 or standard
+	 * 		has changed.
 	 */
-	public void addPage() throws XPathExpressionException {
+	public void addPage() throws XPathExpressionException, InvalidFieldException {
 		//get the second page of the document
 		NodeList pages = doc.getElementsByTagName(XFDL_ELEMENT_PAGE);
 		Node pageTwo = pages.item(0);

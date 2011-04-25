@@ -20,8 +20,11 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	public static final String COMMAND_SELECT_FORM = "SELECT_FORM";
 	public static final String COMMAND_SELECT_TASK = "SELECT_TASK";
 	
-	public static final String TASK_DA2062_ADDPAGE = "Add Page";
 	public static final String TASK_DA1594_ADDPAGE = "Add Page";
+	
+	public static final String TASK_DA2062_ADDPAGE = "Add Page";
+	public static final String TASK_DA2062_UPDATE_HEADERS = "Update Header Data";
+	
 	
 	private MainWindow view;
 	private JPanel currentTaskPanel;
@@ -45,6 +48,88 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	public void itemStateChanged(ItemEvent arg0) {
 	
 
+	}
+	
+	/**
+	 * Reacts to changes in the task form and task lists.
+	 */
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		//Clear the current task panel
+		if(currentTaskPanel != null) {
+			view.remove(currentTaskPanel);
+
+		}
+		
+		//React to a change in the form select
+		if(e.getSource() == view.formList && !e.getValueIsAdjusting()) {
+
+			//Add all possible DA2062 actions
+			if(((JList)e.getSource()).getSelectedValue().equals(FORM_CHOICE_DA1594)) {
+				if(!view.taskListModel.isEmpty()) {
+					view.taskListModel.removeAllElements();
+					view.taskList.clearSelection();
+				}
+				view.taskListModel.addElement(TASK_DA2062_ADDPAGE);
+				currentForm = FORM_CHOICE_DA1594;
+			} else if (((JList)e.getSource()).getSelectedValue().equals(FORM_CHOICE_DA2062)) {
+				if(!view.taskListModel.isEmpty()) {
+					view.taskListModel.removeAllElements();
+					view.taskList.clearSelection();
+				}
+				view.taskListModel.addElement(TASK_DA2062_ADDPAGE);
+				view.taskListModel.addElement(TASK_DA2062_UPDATE_HEADERS);
+				currentForm = FORM_CHOICE_DA2062;
+			}
+			
+		
+			
+			view.pack();
+		}
+			
+		//React to a change in the selected task.
+		else if (e.getSource() == view.taskList 
+				&& !view.taskList.isSelectionEmpty()
+				&& !e.getValueIsAdjusting()) {
+
+			
+			try {
+			//Display appropriate task information
+			if(currentForm == FORM_CHOICE_DA1594) {
+				if(((JList)e.getSource()).getSelectedValue()
+						.equals(TASK_DA1594_ADDPAGE)) {
+					currentTaskPanel = 
+						AddPageTaskPane.addPagePaneFactory(
+								AddPageTaskController.FORM_DA1594);
+					view.add(currentTaskPanel, 
+							BorderLayout.CENTER);
+
+					view.pack();
+				}
+			}
+			if(currentForm == FORM_CHOICE_DA2062) {
+				if (((JList)e.getSource()).getSelectedValue()
+						.equals(TASK_DA2062_ADDPAGE)) {
+					currentTaskPanel = AddPageTaskPane.addPagePaneFactory(
+							AddPageTaskController.FORM_DA2062); 
+					view.add(currentTaskPanel, 
+							BorderLayout.CENTER);
+
+					view.pack();
+				} else if (((JList)e.getSource()).getSelectedValue()
+						.equals(TASK_DA2062_UPDATE_HEADERS)) {
+					currentTaskPanel = DA2062HeaderUpdateTaskPane.factory();
+					view.add(currentTaskPanel, BorderLayout.CENTER);
+					view.pack();
+				}
+			}
+			} catch (Exception excp) {
+				JOptionPane.showMessageDialog(view, 
+						"Error Loading Task Pane.", 
+						"Internal Error.", 
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
 	}
 	
 	/***
@@ -89,83 +174,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	@Override
 	public void windowOpened(WindowEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
-
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		//React to a change in the form select
-		if(e.getSource() == view.formList && !e.getValueIsAdjusting()) {
-
-			//Add all possible DA2062 actions
-			if(((JList)e.getSource()).getSelectedValue().equals(FORM_CHOICE_DA1594)) {
-				if(!view.taskListModel.isEmpty()) {
-					view.taskListModel.removeAllElements();
-					view.taskList.clearSelection();
-				}
-				view.taskListModel.addElement(TASK_DA2062_ADDPAGE);
-				currentForm = FORM_CHOICE_DA1594;
-			} else if (((JList)e.getSource()).getSelectedValue().equals(FORM_CHOICE_DA2062)) {
-				if(!view.taskListModel.isEmpty()) {
-					view.taskListModel.removeAllElements();
-					view.taskList.clearSelection();
-				}
-				view.taskListModel.addElement(TASK_DA2062_ADDPAGE);
-				currentForm = FORM_CHOICE_DA2062;
-			}
-			
-		
-			//Clear the current task panel
-			if(currentTaskPanel != null) {
-				view.remove(currentTaskPanel);
-
-			}
-			view.pack();
-		}
-			
-		//React to a change in the selected task.
-		else if (e.getSource() == view.taskList 
-				&& !view.taskList.isSelectionEmpty()
-				&& !e.getValueIsAdjusting()) {
-
-			
-			try {
-			//Display appropriate task information
-			if(currentForm == FORM_CHOICE_DA1594) {
-				if(((JList)e.getSource()).getSelectedValue()
-						.equals(TASK_DA1594_ADDPAGE)) {
-					currentTaskPanel = 
-						AddPageTaskPane.addPagePaneFactory(
-								AddPageTaskController.FORM_DA1594);
-					view.add(currentTaskPanel, 
-							BorderLayout.CENTER);
-
-					view.pack();
-				}
-			}
-			if(currentForm == FORM_CHOICE_DA2062) {
-				if (((JList)e.getSource()).getSelectedValue()
-						.equals(TASK_DA2062_ADDPAGE)) {
-					currentTaskPanel = AddPageTaskPane.addPagePaneFactory(
-							AddPageTaskController.FORM_DA2062); 
-					view.add(currentTaskPanel, 
-							BorderLayout.CENTER);
-
-					view.pack();
-				}
-			}
-			} catch (Exception excp) {
-				JOptionPane.showMessageDialog(view, 
-						"Error Loading Task Pane.", 
-						"Internal Error.", 
-						JOptionPane.ERROR_MESSAGE);
-			}
-		}
-		
-	}
-
-
-
-
 }
+

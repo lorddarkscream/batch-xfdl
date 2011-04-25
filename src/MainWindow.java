@@ -1,6 +1,8 @@
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
+import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -60,6 +62,7 @@ public class MainWindow extends JFrame {
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		formSelectPanel.add(formListScroll, BorderLayout.CENTER);
+		formSelectPanel.add(Box.createRigidArea(new Dimension(15,0)), BorderLayout.EAST);
 		
 		//Task Selection
 		JPanel formTasksPanel = new JPanel(new BorderLayout());
@@ -80,6 +83,9 @@ public class MainWindow extends JFrame {
 		
 		formTasksPanel.add(taskListScroll, BorderLayout.CENTER);
 		
+		formTasksPanel.add(Box.createRigidArea(new Dimension(15,0)), BorderLayout.EAST);
+		
+		this.add(Box.createRigidArea(new Dimension(15,0)), BorderLayout.EAST);
 		this.pack();
 	}
 }
