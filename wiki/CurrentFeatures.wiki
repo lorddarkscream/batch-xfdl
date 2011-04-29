@@ -7,7 +7,8 @@ Below is a listing of current features supported by BatchXFDL.
 You can see our listing of Planned & Requested features [PlannedRequestedFeatures here]
 
 ==DA1594 (Daily Staff Journal or Duty Officer's Log)==
-# Add additional pages
+  # Add additional pages
 
 ==DA2062 (Hand Receipt)==
-# Add additional pages
+  # Add additional pages
+  # Bulk update header data on multiple files.  Useful for replacing names during hand receipt change over, or updating hand receipts for new TMs, also, for bulk fixing other people's mistakes.
