@@ -1,0 +1,10 @@
+#summary Concept of what the generic batch fill will look like.
+
+= Generic Batch Fill =
+
+My concept is to create a wizard type interface:
+
+# User selects an XFDL document and a data file (Excel really needs to be the end target for anything that is going to work for people in the Army, but comma separated may be an intermediate step). 
+# Program pulls a listing of all fields in the document (all <field> nodes), as well as a listing of data from the data file (first record?). 
+# User associates data to form fields. Once association is complete the program can batch create completed files. 
+
