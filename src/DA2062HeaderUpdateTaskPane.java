@@ -1,15 +1,14 @@
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+
+import net.miginfocom.swing.MigLayout;
 
 /**
  * @author andy
@@ -28,6 +27,30 @@ public class DA2062HeaderUpdateTaskPane extends JPanel {
 	public JList fileList;
 	public DefaultListModel fileListModel;
 	
+	public JButton destBrowseButton;
+	public JTextField destFolder;
+	
+	public JCheckBox toCheck;
+	public JCheckBox fromCheck;
+	public JCheckBox recptnrCheck;
+	public JCheckBox enditmsCheck;
+	public JCheckBox itemdesCheck;
+	public JCheckBox pubnrCheck;
+	public JCheckBox pubdateCheck;
+	public JCheckBox quantityCheck;
+	
+	public JTextField toText;
+	public JTextField fromText;
+	public JTextField recptnrText;
+	public JTextField enditmsText;
+	public JTextField itemdesText;
+	public JTextField pubnrText;
+	public JTextField pubdateText;
+	public JTextField quantityText;
+	
+	public JButton updateButton;
+	
+	
 	private DA2062HeaderUpdateController control;
 	
 
@@ -35,47 +58,37 @@ public class DA2062HeaderUpdateTaskPane extends JPanel {
 		
 		this.control = control;
 		
-		this.setLayout(new BorderLayout());
-		
-		JPanel taskCondStandPanel = new JPanel();
-		taskCondStandPanel.setLayout(new BoxLayout(taskCondStandPanel, BoxLayout.PAGE_AXIS));
+		this.setLayout(new MigLayout());
 		
 		JLabel taskCondStand = new JLabel("<html><h1>Batch Update DA2062 Header Data</h1>" +
 				"<p><u>Task:</u> Replace the header data on multiple DA2062 files " +
-					"in a single operation</p>" +
+					"in a single operation.</p>" +
 				"<p><u>Condition:</u> Given a list of valid DA2062 files, " + 
 					"replacement header data and a destination directory.</p>" +
-				"<p><u>Standard:</u> All header data in specified files will be " +
-					"updated and resulting files will be written to " +
-					"destination <br>directory.  Invalid files will be skipped. " +
-					"Result files will overwrite any file with the same name " +
-					"in <br>destination directory.</p></html>");
+				"<p><u>Standard:</u> " +
+				"<ol>" +
+				"<li>Header data specified with a check in the fields below " +
+				"will be replaced in specified files.</li>" +
+				"<li>Resulting files will be written to destination " +
+				"directory with their original filename.</li>" +
+				"<li>Resulting files will overwrite any file with the same name " +
+					"in destination directory.</li>" +
+				"<li>Invalid files will be skipped. </li>" +
+				"</ol></p></html>");
 		
-		taskCondStandPanel.add(taskCondStand);
-		taskCondStandPanel.add(Box.createRigidArea(new Dimension(0,10)));
-		this.add(taskCondStandPanel, BorderLayout.NORTH);
+		this.add(taskCondStand, "wrap, span 3");
 		
 		//*********************************************************************
 		//File list section
 		//*********************************************************************
-		JPanel fileListPanel = new JPanel();
-		fileListPanel.setLayout(new BorderLayout());
-		fileListPanel.add(new JLabel("<html><u>Files:</u></html>"), 
-				BorderLayout.NORTH);
+		this.add(new JLabel("<html><u>Files:</u></html>"), "wrap");
 		
-		JPanel addRemovePanel = new JPanel();
-		addRemovePanel.setLayout(new BoxLayout(addRemovePanel, 
-				BoxLayout.PAGE_AXIS));
-		addButton = new JButton("Add Files");
+		addButton = new JButton("Add Files...");
 		addButton.addActionListener(this.control);
 		
 		removeButton = new JButton("Remove Files");
 		removeButton.addActionListener(this.control);
-		
-		addRemovePanel.add(addButton);
-		addRemovePanel.add(removeButton);
-		
-		fileListPanel.add(addRemovePanel, BorderLayout.WEST);
+
 		
 		//files list box
 		fileListModel = new DefaultListModel();
@@ -89,14 +102,110 @@ public class DA2062HeaderUpdateTaskPane extends JPanel {
 		fileListScrollPane.setHorizontalScrollBarPolicy(
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		
-		fileListPanel.add(fileListScrollPane, BorderLayout.CENTER);
+			
+		this.add(addButton, "flowy, split 2, aligny top, sg leftbuttons");
+		this.add(removeButton, "aligny top, sg leftbuttons");
+		this.add(fileListScrollPane, " spanx 2, wrap, grow");
 		
-		
-		this.add(fileListPanel);
+	
 		
 		//*********************************************************************
 		//Destination Folder section
 		//*********************************************************************
+		this.add(new JLabel("<html><u>Destination Folder:</u></html>"),
+				"wrap");
+		
+		destBrowseButton = new JButton("Browse...");
+		destBrowseButton.addActionListener(control);
+		this.add(destBrowseButton, "sg leftbuttons");
+		
+		destFolder = new JTextField();
+		this.add(destFolder, "span 2, wrap, grow");
+		
+	
+		
+		//*********************************************************************
+		//Header Properties section
+		//*********************************************************************
+		this.add(new JLabel("<html><u>Properties:</u></html>"), "wrap");
+		
+		
+		//Create the to fields
+		this.add(new JLabel("To: "), "ax right");
+		toCheck = new JCheckBox();
+		toCheck.addActionListener(control);
+		this.add(toCheck);
+		toText = new JTextField();
+		toText.setEnabled(false);
+		this.add(toText, "wrap, grow");
+
+		
+		//From fields
+		this.add(new JLabel("From:"), "ax right");
+		fromCheck = new JCheckBox();
+		fromCheck.addActionListener(control);
+		this.add(fromCheck);
+		fromText = new JTextField();
+		fromText.setEnabled(false);
+		this.add(fromText, "wrap, grow");
+		
+		//Receipt Number fields
+		this.add(new JLabel("Receipt Number:"), "ax right");
+		recptnrCheck = new JCheckBox();
+		recptnrCheck.addActionListener(control);
+		this.add(recptnrCheck);
+		recptnrText = new JTextField();
+		recptnrText.setEnabled(false);
+		this.add(recptnrText, "wrap, grow");
+		
+		//End Item Stock Number
+		this.add(new JLabel("End Item Stock Number: "), "ax right");
+		enditmsCheck = new JCheckBox();
+		enditmsCheck.addActionListener(control);
+		this.add(enditmsCheck);
+		enditmsText = new JTextField();
+		enditmsText.setEnabled(false);
+		this.add(enditmsText, "wrap, grow");
+		
+		//item description
+		this.add(new JLabel("Item Description: "), "ax right");
+		itemdesCheck = new JCheckBox();
+		itemdesCheck.addActionListener(control);
+		this.add(itemdesCheck);	
+		itemdesText = new JTextField();
+		itemdesText.setEnabled(false);
+		this.add(itemdesText, "wrap, grow");
+		
+		//publication number
+		this.add(new JLabel("Publication Number: "), "ax right");
+		pubnrCheck = new JCheckBox();
+		pubnrCheck.addActionListener(control);
+		this.add(pubnrCheck);
+		pubnrText = new JTextField();
+		pubnrText.setEnabled(false);
+		this.add(pubnrText, "wrap, grow");
+		
+		
+		this.add(new JLabel("Publication Date:"), "ax right");
+		pubdateCheck = new JCheckBox();
+		pubdateCheck.addActionListener(control);
+		this.add(pubdateCheck);		
+		pubdateText = new JTextField();
+		pubdateText.setEnabled(false);
+		this.add(pubdateText, "wrap, grow");
+		
+		this.add(new JLabel("Quantity:"), "ax right");		
+		quantityCheck = new JCheckBox();
+		quantityCheck.addActionListener(control);
+		this.add(quantityCheck);		
+		quantityText = new JTextField();
+		quantityText.setEnabled(false);
+		this.add(quantityText, "wrap, grow"); 
+		
+		//Update button
+		updateButton = new JButton("Update");
+		updateButton.addActionListener(control);
+		this.add(updateButton, "ax right, span 3");
 		
 	}
 	
