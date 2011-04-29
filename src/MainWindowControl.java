@@ -3,8 +3,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import java.awt.BorderLayout;
-
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.JList;
@@ -37,6 +35,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	 */
 	public void startView(MainWindow view) {
 		this.view = view;
+		view.setLocation(0, 0);
 		view.setVisible(true);
 	}
 	
@@ -81,10 +80,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 				view.taskListModel.addElement(TASK_DA2062_UPDATE_HEADERS);
 				currentForm = FORM_CHOICE_DA2062;
 			}
-			
-		
-			
-			view.pack();
+
 		}
 			
 		//React to a change in the selected task.
@@ -98,29 +94,19 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 			if(currentForm == FORM_CHOICE_DA1594) {
 				if(((JList)e.getSource()).getSelectedValue()
 						.equals(TASK_DA1594_ADDPAGE)) {
-					currentTaskPanel = 
-						AddPageTaskPane.addPagePaneFactory(
-								AddPageTaskController.FORM_DA1594);
-					view.add(currentTaskPanel, 
-							BorderLayout.CENTER);
-
-					view.pack();
+					view.remove(view.actionContent);
+					changeActionPane(AddPageTaskPane.addPagePaneFactory(
+								AddPageTaskController.FORM_DA1594));
 				}
 			}
 			if(currentForm == FORM_CHOICE_DA2062) {
 				if (((JList)e.getSource()).getSelectedValue()
 						.equals(TASK_DA2062_ADDPAGE)) {
-					currentTaskPanel = AddPageTaskPane.addPagePaneFactory(
-							AddPageTaskController.FORM_DA2062); 
-					view.add(currentTaskPanel, 
-							BorderLayout.CENTER);
-
-					view.pack();
+					changeActionPane(AddPageTaskPane.addPagePaneFactory(
+							AddPageTaskController.FORM_DA2062)); 
 				} else if (((JList)e.getSource()).getSelectedValue()
 						.equals(TASK_DA2062_UPDATE_HEADERS)) {
-					currentTaskPanel = DA2062HeaderUpdateTaskPane.factory();
-					view.add(currentTaskPanel, BorderLayout.CENTER);
-					view.pack();
+					changeActionPane(DA2062HeaderUpdateTaskPane.factory());
 				}
 			}
 			} catch (Exception excp) {
@@ -130,6 +116,14 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 						JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+	
+	private void changeActionPane(JPanel newAction) {
+		view.remove(view.actionContent);
+		view.actionContent = newAction;
+		view.add(view.actionContent, "w 900, top");
+		view.repaint();
+		view.actionContent.revalidate();
 	}
 	
 	/***

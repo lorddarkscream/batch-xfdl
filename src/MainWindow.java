@@ -1,8 +1,4 @@
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-
-import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -10,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+
+import net.miginfocom.swing.MigLayout;
 
 public class MainWindow extends JFrame {
 
@@ -27,23 +25,17 @@ public class MainWindow extends JFrame {
 	public MainWindow(MainWindowControl control) 
 	{
 		this.setLocationRelativeTo(null);
+		this.setSize(1200, 1000);
 		
 		//Border Layout for main window
-		this.setLayout(new BorderLayout());
+		this.setLayout(new MigLayout());
 		
-		this.setTitle("BatchXFLD");
+		this.setTitle("Batch-XFLD");
 		this.addWindowListener(control);
 		
-		//Panel for task selection pane
-		JPanel taskPane = new JPanel(new BorderLayout());
-		this.add(taskPane, BorderLayout.WEST);
 		
 		//Form Selection
-		JPanel formSelectPanel = new JPanel(new BorderLayout());
-		taskPane.add(formSelectPanel, BorderLayout.NORTH);
-		JLabel forms = new JLabel();
-		forms.setText("Forms:");
-		formSelectPanel.add(forms, BorderLayout.NORTH);
+		this.add(new JLabel("Forms:"), "flowy, split 4, top");
 		
 		//list of available forms
 		formListModel = new DefaultListModel();
@@ -60,15 +52,11 @@ public class MainWindow extends JFrame {
 		JScrollPane formListScroll = new JScrollPane(formList);
 		formListScroll.setVerticalScrollBarPolicy(
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		formSelectPanel.add(formListScroll, BorderLayout.CENTER);
-		formSelectPanel.add(Box.createRigidArea(new Dimension(15,0)), BorderLayout.EAST);
+				
+		this.add(formListScroll, "w 300, sg formAndTask");
 		
 		//Task Selection
-		JPanel formTasksPanel = new JPanel(new BorderLayout());
-		taskPane.add(formTasksPanel, BorderLayout.CENTER);
-		
-		formTasksPanel.add(new JLabel("Tasks:"), BorderLayout.NORTH);
+		this.add(new JLabel("Tasks:"));
 		
 		taskListModel = new DefaultListModel();
 		taskList = new JList(taskListModel);
@@ -81,11 +69,10 @@ public class MainWindow extends JFrame {
 		taskListScroll.setVerticalScrollBarPolicy(
 				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 		
-		formTasksPanel.add(taskListScroll, BorderLayout.CENTER);
+		this.add(taskListScroll, "w 300, sg formAndTask");
 		
-		formTasksPanel.add(Box.createRigidArea(new Dimension(15,0)), BorderLayout.EAST);
-		
-		this.add(Box.createRigidArea(new Dimension(15,0)), BorderLayout.EAST);
-		this.pack();
+		actionContent = new JPanel();
+		this.add(actionContent);
+
 	}
 }
