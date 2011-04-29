@@ -1,0 +1,13 @@
+#summary Current Batch-XFDL Features
+#labels Featured
+
+= Current Features =
+Below is a listing of current features supported by BatchXFDL.
+
+You can see our listing of Planned & Requested features [PlannedRequestedFeatures here]
+
+==DA1594 (Daily Staff Journal or Duty Officer's Log)==
+# Add additional pages
+
+==DA2062 (Hand Receipt)==
+# Add additional pages
