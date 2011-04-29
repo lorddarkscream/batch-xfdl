@@ -6,7 +6,7 @@ This is a list of planned/requested features for the program.  Currently the lis
 
 ==Planned Features==
   * Batch change to & from headers on DA2062
-  * Create generic method for batch filling any XFDL document.
+  * Create generic method to batch fill any XFDL document.
   * Create digitally singable DA2062 (very long term goal).
   * Merge multiple DA-2062 documents into one file. (for people who currently have 9 files for one hand receipt).
 
