@@ -253,7 +253,7 @@ public class DA2062 extends XFDLDocument {
 	 */
 	public void setQuantity(String pubdate) 
 	throws XPathExpressionException, InvalidFieldException {
-		super.setFieldValue(DA2062_FIELD_PUBDATE, pubdate);
+		super.setFieldValue(DA2062_FIELD_QUANTITY, pubdate);
 	}
 
 }
