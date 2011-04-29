@@ -1,4 +1,5 @@
 #summary Listing of planned and requested features.
+#labels Featured
 
 = Introduction =
 
