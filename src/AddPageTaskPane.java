@@ -1,13 +1,11 @@
-import java.awt.BorderLayout;
-
-import java.awt.GridLayout;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+
+import net.miginfocom.swing.MigLayout;
 
 
 
@@ -28,54 +26,40 @@ public class AddPageTaskPane extends JPanel {
 
 	private AddPageTaskPane(AddPageTaskController control) {
 		
-		this.setLayout(new BorderLayout());
+		this.setLayout(new MigLayout());
 		
-		//Super Container Panel
-		JPanel superContainer = new JPanel(new BorderLayout());
-		this.add(superContainer, BorderLayout.NORTH);
 		
 		//Task Label
-		superContainer.add(new JLabel("<html><h1>Add Pages to "
-				+ control.getFormName() 
-				+ "</h1></html>"), 
-				BorderLayout.NORTH);
+		this.add(new JLabel("<html><h1>Add Pages to "
+					+ control.getFormName() 
+					+ "</h1></html>"), 
+				"wrap, span 3");
 				
 		//Labels Panel
-		JPanel labels = new JPanel(new GridLayout(3,1));
-		labels.add(new JLabel("Source File:"));
-		labels.add(new JLabel("Output File Name: (leave blank to overwrite)"));
-		labels.add(new JLabel("Number of Additional Pages:"));
-		superContainer.add(labels, BorderLayout.WEST);
-		
-		//Fields Container
-		JPanel fields = new JPanel(new GridLayout(3,1));
-		
+		this.add(new JLabel("Source File: "));
 		sourceFile = new JTextField("", 30);
-		fields.add(sourceFile);
+		this.add(sourceFile, "grow");
 		
-		outputFileName = new JTextField("", 30);
-		fields.add(outputFileName);
-		
-		numPages = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
-		fields.add(numPages);
-		
-		superContainer.add(fields, BorderLayout.CENTER);
-		
-		//Container for the browse button
-		JPanel browse = new JPanel(new GridLayout(3,1));
 		fileSelect = new JButton(COMMAND_BROWSE);
 		fileSelect.setActionCommand(COMMAND_BROWSE);
 		fileSelect.addActionListener(control);
-		browse.add(fileSelect);
-		superContainer.add(browse, BorderLayout.EAST);
+		this.add(fileSelect, "wrap, sg buttons");
+
+		
+		this.add(new JLabel("Output File Name (optional): "));
+		outputFileName = new JTextField("", 30);
+		this.add(outputFileName, "wrap, span 2, grow");
+		
+		this.add(new JLabel("Number of Additional Pages: "));
+		numPages = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
+		this.add(numPages, "wrap, span 2, grow");
+
 		
 		//Set up the execute button
-		JPanel executePanel = new JPanel(new BorderLayout());
 		executeTask = new JButton(COMMAND_EXECUTE);
 		executeTask.setActionCommand(COMMAND_EXECUTE);
 		executeTask.addActionListener(control);
-		executePanel.add(executeTask, BorderLayout.EAST);
-		superContainer.add(executePanel, BorderLayout.SOUTH);
+		this.add(executeTask, "right, span 3, sg buttons");
 	}
 	
 	/**
