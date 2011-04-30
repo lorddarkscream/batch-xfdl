@@ -1,10 +1,49 @@
 #summary Concept of what the generic batch fill will look like.
+#labels Phase-Requirements
 
 = Generic Batch Fill =
 
 My concept is to create a wizard type interface:
 
-# User selects an XFDL document and a data file (Excel really needs to be the end target for anything that is going to work for people in the Army, but comma separated may be an intermediate step). 
-# Program pulls a listing of all fields in the document (all <field> nodes), as well as a listing of data from the data file (first record?). 
-# User associates data to form fields. Once association is complete the program can batch create completed files. 
+  # User selects an XFDL document and a data file (Excel really needs to be the end target for anything that is going to work for people in the Army, but comma separated may be an intermediate step). 
+  # Program pulls a listing of all fields in the document (all <field> nodes), as well as a listing of data from the data file (first record?). 
+  # User associates data to form fields. Once association is complete the program can batch create completed files. 
 
+==Issues==
+
+At present there is no identifiable method to collect all of the fields and then present the user with human readable information about what the field is.  Each field has an SID and an acclabel (accessibility label).  Unfortunately, the SID is a machine unique identifier, and the acclabel is intended to be read by a screen reader, and would not necessarily be the best choice for printing in a UI.  Example field is listed below:
+
+{{{
+<field sid="RECPTNR">
+         <itemlocation>
+            <ae>
+               <ae>absolute</ae>
+               <ae>1083</ae>
+               <ae>101</ae>
+            </ae>
+            <ae>
+               <ae>extent</ae>
+               <ae>136</ae>
+               <ae>24</ae>
+            </ae>
+         </itemlocation>
+         <value/>
+         <borderwidth>0</borderwidth>
+         <fontinfo>
+            <ae>Times New Roman</ae>
+            <ae>10</ae>
+            <ae>plain</ae>
+         </fontinfo>
+         <scrollhoriz>wordwrap</scrollhoriz>
+         <scrollvert>fixed</scrollvert>
+         <format>
+            <ae>string</ae>
+            <ae>optional</ae>
+         </format>
+         <next>ENDITEMS</next>
+         <previous>TO</previous>
+         <acclabel>enter hand receipt number.
+</acclabel>
+      </field>
+
+}}}
