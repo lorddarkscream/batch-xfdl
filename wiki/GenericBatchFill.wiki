@@ -47,3 +47,6 @@ At present there is no identifiable method to collect all of the fields and then
       </field>
 
 }}}
+
+===Possible solution===
+Render the form in a java window and allow the user to drag and drop the columns they want to fill from into the fields they want filled. 
