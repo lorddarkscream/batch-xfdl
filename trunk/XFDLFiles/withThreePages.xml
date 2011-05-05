@@ -1,4 +1,3 @@
-application/vnd.xfdl;content-encoding="base64-gzip"
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <XFDL xmlns="http://www.PureEdge.com/XFDL/6.5" xmlns:custom="http://www.PureEdge.com/XFDL/Custom" xmlns:designer="http://www.PureEdge.com/Designer/6.1" xmlns:pecs="http://www.PureEdge.com/PECustomerService" xmlns:xfdl="http://www.PureEdge.com/XFDL/6.5">
    <globalpage sid="global">
