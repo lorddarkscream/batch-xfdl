@@ -2,16 +2,17 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -23,13 +24,17 @@ import net.miginfocom.swing.MigLayout;
 public class FormRenderer {
 
 	private XMLStreamReader reader;
-	private ArrayList<JPanel> pages;
+	private ArrayList<FormPanel> pages;
 	private int currentPage;
 	private HashMap<JComponent, String> components;
+	
+	private static final String FILE_HEADER_BLOCK = 
+		"application/vnd.xfdl;content-encoding=\"base64-gzip\""; 
 	
 	private static final String XFDL_PAGE = "page";
 	private static final String XFDL_FIELD = "field";
 	private static final String XFDL_LABEL = "label";
+	private static final String XFDL_LINE = "line";
 	private static final String XFDL_ATTRIBUTE_SID = "sid";
 	private static final String XFDL_VALUE = "value";
 	private static final String XFDL_ITEMLOCATION = "itemlocation";
@@ -42,14 +47,33 @@ public class FormRenderer {
 	private static final String XFDL_FONT_STYLE_ITALIC = "italic";
 	
 	
-	public FormRenderer(String path) 
-	throws FileNotFoundException, 
-	XMLStreamException 
+	public FormRenderer(String inputFile) 
+	throws XMLStreamException, IOException 
 	{
-		XMLInputFactory f = XMLInputFactory.newInstance();
-		reader = f.createXMLStreamReader(new FileInputStream(path));
 		
-		pages = new ArrayList<JPanel>();
+		//create file object
+		File f = new File(inputFile);
+		if(!f.exists()) {
+			throw new IOException("Specified File could not be found!");
+		}
+		
+		//open file stream from file
+		FileInputStream fis = new FileInputStream(inputFile);
+		
+		//Skip past the MIME header
+		fis.skip(FILE_HEADER_BLOCK.length());	
+		
+		//Decompress from base 64					
+		Base64.InputStream bis = new Base64.InputStream(fis, 
+				Base64.DECODE);
+		
+		//UnZIP the resulting stream
+		GZIPInputStream gis = new GZIPInputStream(bis);
+		
+		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		reader = inputFactory.createXMLStreamReader(gis);
+		
+		pages = new ArrayList<FormPanel>();
 		components = new HashMap<JComponent, String>();
 	}
 	
@@ -76,6 +100,9 @@ public class FormRenderer {
 					else if(reader.getLocalName().equals(XFDL_LABEL)) {
 						addLabel();
 					}
+					else if(reader.getLocalName().equals(XFDL_LINE)) {
+						addLine();
+					}
 				}
 			}
 		} catch (XMLStreamException e) {
@@ -84,6 +111,7 @@ public class FormRenderer {
 		}
 	}
 	
+	
 	/**
 	 * Creates a new page of form.
 	 * 
@@ -91,7 +119,7 @@ public class FormRenderer {
 	 * End State: Cursor does not change state in this method. 
 	 */
 	private void addPage() {
-		JPanel page = new JPanel();
+		FormPanel page = new FormPanel();
 		page.setLayout(new MigLayout());
 		pages.add(page);
 		currentPage = pages.size() - 1;
@@ -182,6 +210,29 @@ public class FormRenderer {
 					"w " + label.getWidth() + 
 					", h " + label.getHeight());
 		}
+	}
+
+	/**
+	 * Draws a new line on the Panel
+	 * 
+	 * Start State: Cursor is positioned on the <line> start element.
+	 * End State: Cursor is positioned on the <line> end element.
+	 * 
+	 * @throws XMLStreamException 
+	 */
+	private void addLine() throws XMLStreamException {
+		while(reader.hasNext() &&
+				!(reader.isEndElement() && 
+						reader.getLocalName().equals(XFDL_LINE))) {
+			
+			reader.next();
+			if(reader.isStartElement()) {
+				if(reader.getLocalName().equals(XFDL_ITEMLOCATION)) {
+					pages.get(currentPage).addLine(processItemLocation());
+				}
+			}
+		}
+		
 	}
 
 	/**
@@ -318,8 +369,12 @@ public class FormRenderer {
 	 * rendered to an element in the Array.
 	 * @return ArrayList of JPanel pages.
 	 */
-	public ArrayList<JPanel> getForm() {
-		return pages;
+	public FormPanel getPage(int page) {
+		return pages.get(page);
+	}
+	
+	public int getPageCount() {
+		return pages.size();
 	}
 	
 	/**

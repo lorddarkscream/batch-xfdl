@@ -1,7 +1,3 @@
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-
-
 public class BatchXFDL {
 
 	/**
@@ -9,17 +5,7 @@ public class BatchXFDL {
 	 */
 	public static void main(String[] args) {
 		 
-			try {	
-				
-				FormRenderer r = new FormRenderer(
-						"/Users/andy/Documents/workspace/Batch-XFDL/XFDLFiles/withThreePages.xml");
-				r.renderForm(null);
-				JFrame renderFrame = new JFrame();
-				JScrollPane scroller = new JScrollPane(r.getForm().get(0));
-				renderFrame.add(scroller);
-				renderFrame.setVisible(true);
-				renderFrame.pack();
-				
+			try {			
 			
 				//Display Main Window
 				MainWindowControl controller = new MainWindowControl();

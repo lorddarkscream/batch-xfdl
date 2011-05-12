@@ -39,6 +39,7 @@ public class MainWindow extends JFrame {
 		
 		//list of available forms
 		formListModel = new DefaultListModel();
+		formListModel.addElement(MainWindowControl.FORM_CHOICE_GENERIC);
 		formListModel.addElement(MainWindowControl.FORM_CHOICE_DA1594);
 		formListModel.addElement(MainWindowControl.FORM_CHOICE_DA2062);
 		

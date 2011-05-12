@@ -14,9 +14,12 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 
 	public static final String FORM_CHOICE_DA2062 = "DA Form 2062";
 	public static final String FORM_CHOICE_DA1594 = "DA Form 1594";
+	public static final String FORM_CHOICE_GENERIC = "All Forms";
 	
 	public static final String COMMAND_SELECT_FORM = "SELECT_FORM";
 	public static final String COMMAND_SELECT_TASK = "SELECT_TASK";
+	
+	public static final String TASK_ALL_VIEW = "View Form";
 	
 	public static final String TASK_DA1594_ADDPAGE = "Add Page";
 	
@@ -63,7 +66,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 		//React to a change in the form select
 		if(e.getSource() == view.formList && !e.getValueIsAdjusting()) {
 
-			//Add all possible DA2062 actions
+			//Add all possible actions
 			if(((JList)e.getSource()).getSelectedValue().equals(FORM_CHOICE_DA1594)) {
 				if(!view.taskListModel.isEmpty()) {
 					view.taskListModel.removeAllElements();
@@ -79,6 +82,14 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 				view.taskListModel.addElement(TASK_DA2062_ADDPAGE);
 				view.taskListModel.addElement(TASK_DA2062_UPDATE_HEADERS);
 				currentForm = FORM_CHOICE_DA2062;
+			} else if (((JList)e.getSource())
+					.getSelectedValue().equals(FORM_CHOICE_GENERIC)) {
+				if(!view.taskListModel.isEmpty()) {
+					view.taskListModel.removeAllElements();
+					view.taskList.clearSelection();
+				}
+				view.taskListModel.addElement(TASK_ALL_VIEW);
+				currentForm = FORM_CHOICE_GENERIC;
 			}
 
 		}
@@ -90,25 +101,32 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 
 			
 			try {
-			//Display appropriate task information
-			if(currentForm == FORM_CHOICE_DA1594) {
-				if(((JList)e.getSource()).getSelectedValue()
-						.equals(TASK_DA1594_ADDPAGE)) {
-					view.remove(view.actionContent);
-					changeActionPane(AddPageTaskPane.addPagePaneFactory(
+				//Display appropriate task information
+				if(currentForm == FORM_CHOICE_DA1594) {
+					if(((JList)e.getSource()).getSelectedValue()
+							.equals(TASK_DA1594_ADDPAGE)) {
+						view.remove(view.actionContent);
+						changeActionPane(AddPageTaskPane.addPagePaneFactory(
 								AddPageTaskController.FORM_DA1594));
+					}
 				}
-			}
-			if(currentForm == FORM_CHOICE_DA2062) {
-				if (((JList)e.getSource()).getSelectedValue()
-						.equals(TASK_DA2062_ADDPAGE)) {
-					changeActionPane(AddPageTaskPane.addPagePaneFactory(
-							AddPageTaskController.FORM_DA2062)); 
-				} else if (((JList)e.getSource()).getSelectedValue()
-						.equals(TASK_DA2062_UPDATE_HEADERS)) {
-					changeActionPane(DA2062HeaderUpdateTaskPane.factory());
+				if(currentForm == FORM_CHOICE_DA2062) {
+					if (((JList)e.getSource()).getSelectedValue()
+							.equals(TASK_DA2062_ADDPAGE)) {
+						changeActionPane(AddPageTaskPane.addPagePaneFactory(
+								AddPageTaskController.FORM_DA2062)); 
+					} else if (((JList)e.getSource()).getSelectedValue()
+							.equals(TASK_DA2062_UPDATE_HEADERS)) {
+						changeActionPane(DA2062HeaderUpdateTaskPane.factory());
+					}
 				}
-			}
+				if(currentForm == FORM_CHOICE_GENERIC) {
+					if(((JList)e.getSource()).getSelectedValue()
+							.equals(TASK_ALL_VIEW)) {
+						changeActionPane(FormViewPane.newFormViewPane());
+						
+					}
+				}
 			} catch (Exception excp) {
 				JOptionPane.showMessageDialog(view, 
 						"Error Loading Task Pane.", 
