@@ -5,8 +5,9 @@ public class BatchXFDL {
 	 */
 	public static void main(String[] args) {
 		 
-			try {			
-			
+			try {	
+				
+				
 				//Display Main Window
 				MainWindowControl controller = new MainWindowControl();
 				MainWindow view = new MainWindow(controller);

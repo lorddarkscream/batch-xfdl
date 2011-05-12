@@ -11,6 +11,7 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -35,6 +36,7 @@ public class FormRenderer {
 	private static final String XFDL_FIELD = "field";
 	private static final String XFDL_LABEL = "label";
 	private static final String XFDL_LINE = "line";
+	private static final String XFDL_CHECK = "check";
 	private static final String XFDL_ATTRIBUTE_SID = "sid";
 	private static final String XFDL_VALUE = "value";
 	private static final String XFDL_ITEMLOCATION = "itemlocation";
@@ -46,6 +48,7 @@ public class FormRenderer {
 	private static final String XFDL_FONT_STYLE_UNDERLINE = "underline";
 	private static final String XFDL_FONT_STYLE_ITALIC = "italic";
 	
+	private static final String XFDL_VALUE_TRUE = "on";	
 	
 	public FormRenderer(String inputFile) 
 	throws XMLStreamException, IOException 
@@ -103,6 +106,9 @@ public class FormRenderer {
 					else if(reader.getLocalName().equals(XFDL_LINE)) {
 						addLine();
 					}
+					else if(reader.getLocalName().equals(XFDL_CHECK)) {
+						addCheck();
+					}
 				}
 			}
 		} catch (XMLStreamException e) {
@@ -113,17 +119,46 @@ public class FormRenderer {
 	
 	
 	/**
-	 * Creates a new page of form.
+	 * Adds a check box to the form.
 	 * 
-	 * Start State: Cursor is on the <page> start element.
-	 * End State: Cursor does not change state in this method. 
+	 * Start State: Cursor is positioned on the <check> start element.
+	 * End State: Cursor is positioned on the <check> end element.
+	 * @throws XMLStreamException 
 	 */
-	private void addPage() {
-		FormPanel page = new FormPanel();
-		page.setLayout(new MigLayout());
-		pages.add(page);
-		currentPage = pages.size() - 1;
-		components.put(page, reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID));		
+	private void addCheck() throws XMLStreamException {
+		JCheckBox check = new JCheckBox();
+		Rectangle bounds = new Rectangle();
+		
+		String sid = reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID);
+		
+		while(reader.hasNext() &&
+				!(reader.isEndElement() &&
+						reader.getLocalName().equals(XFDL_CHECK))) {
+			reader.next();
+			if(reader.isStartElement()) {
+				if(reader.getLocalName().equals(XFDL_ITEMLOCATION)) {
+					bounds = processItemLocation();
+				}
+				else if(reader.getLocalName().equals(XFDL_VALUE)) {
+					if(processValue().equals(XFDL_VALUE_TRUE)) {
+						check.setSelected(true);
+					} else {
+						check.setSelected(false);
+					}
+				}
+			}
+		}
+		
+		if(bounds != null) {
+			check.setBounds(bounds);
+			components.put(check, sid);
+			pages.get(currentPage).add(check, 
+					"pos " + check.getX() + " " + check.getY() + ", " +
+					"w " + check.getWidth() + 
+					", h " + check.getHeight());
+		}
+		
+		
 	}
 
 	/**
@@ -147,10 +182,10 @@ public class FormRenderer {
 				{
 					bounds = processItemLocation();
 				}
-				if(reader.getLocalName().equals(XFDL_VALUE)) {
+				else if(reader.getLocalName().equals(XFDL_VALUE)) {
 					field.setText(processValue());
 				}
-				if(reader.getLocalName().equals(XFDL_FONT)) {
+				else if(reader.getLocalName().equals(XFDL_FONT)) {
 					field.setFont(processFont());
 				}
 			}
@@ -212,6 +247,7 @@ public class FormRenderer {
 		}
 	}
 
+
 	/**
 	 * Draws a new line on the Panel
 	 * 
@@ -233,6 +269,20 @@ public class FormRenderer {
 			}
 		}
 		
+	}
+
+	/**
+	 * Creates a new page of form.
+	 * 
+	 * Start State: Cursor is on the <page> start element.
+	 * End State: Cursor does not change state in this method. 
+	 */
+	private void addPage() {
+		FormPanel page = new FormPanel();
+		page.setLayout(new MigLayout());
+		pages.add(page);
+		currentPage = pages.size() - 1;
+		components.put(page, reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID));		
 	}
 
 	/**

@@ -139,7 +139,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	private void changeActionPane(JPanel newAction) {
 		view.remove(view.actionContent);
 		view.actionContent = newAction;
-		view.add(view.actionContent, "w 900, top");
+		view.add(view.actionContent, "w 900, top, height " + view.getHeight());
 		view.repaint();
 		view.actionContent.revalidate();
 	}
