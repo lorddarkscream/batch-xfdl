@@ -1,25 +1,22 @@
 import java.awt.Font;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import net.miginfocom.swing.MigLayout;
 
 
 public class FormRenderer {
@@ -27,7 +24,6 @@ public class FormRenderer {
 	private XMLStreamReader reader;
 	private ArrayList<FormPanel> pages;
 	private int currentPage;
-	private HashMap<JComponent, String> components;
 	
 	private static final String FILE_HEADER_BLOCK = 
 		"application/vnd.xfdl;content-encoding=\"base64-gzip\""; 
@@ -77,7 +73,6 @@ public class FormRenderer {
 		reader = inputFactory.createXMLStreamReader(gis);
 		
 		pages = new ArrayList<FormPanel>();
-		components = new HashMap<JComponent, String>();
 	}
 	
 	/**
@@ -92,7 +87,6 @@ public class FormRenderer {
 	public void renderForm(ActionListener control) throws XMLStreamException {
 		try {
 			while(reader.hasNext()) {
-				reader.next();
 				if(reader.isStartElement()) {
 					if(reader.getLocalName().equals(XFDL_PAGE)) {
 						addPage();
@@ -110,6 +104,7 @@ public class FormRenderer {
 						addCheck();
 					}
 				}
+				reader.next();
 			}
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
@@ -134,7 +129,9 @@ public class FormRenderer {
 		while(reader.hasNext() &&
 				!(reader.isEndElement() &&
 						reader.getLocalName().equals(XFDL_CHECK))) {
+			
 			reader.next();
+			
 			if(reader.isStartElement()) {
 				if(reader.getLocalName().equals(XFDL_ITEMLOCATION)) {
 					bounds = processItemLocation();
@@ -147,15 +144,13 @@ public class FormRenderer {
 					}
 				}
 			}
+			
+
 		}
 		
 		if(bounds != null) {
 			check.setBounds(bounds);
-			components.put(check, sid);
-			pages.get(currentPage).add(check, 
-					"pos " + check.getX() + " " + check.getY() + ", " +
-					"w " + check.getWidth() + 
-					", h " + check.getHeight());
+			pages.get(currentPage).add(check, sid);
 		}
 		
 		
@@ -189,15 +184,12 @@ public class FormRenderer {
 					field.setFont(processFont());
 				}
 			}
+			
 		}
 		
 		if(bounds != null) {
 			field.setBounds(bounds);
-			components.put(field, sid);
-			pages.get(currentPage).add(field, 
-					"pos " + field.getX() + " " + field.getY() + ", " +
-					"w " + field.getWidth() + 
-					", h " + field.getHeight());
+			pages.get(currentPage).add(field, sid);
 		}
 	}
 
@@ -218,15 +210,11 @@ public class FormRenderer {
 				!(reader.isEndElement() && 
 						reader.getLocalName().equals(XFDL_LABEL))) 
 		{
-			
 			reader.next();
 			
 			if (reader.isStartElement()) {
 				if(reader.getLocalName().equals(XFDL_ITEMLOCATION)) {
 					bounds = processItemLocation();
-					if(bounds != null) {
-						label.setBounds(bounds);
-					}
 				}
 				else if(reader.getLocalName().equals(XFDL_VALUE)) {
 					label.setText(processValue());
@@ -239,11 +227,8 @@ public class FormRenderer {
 		}
 		
 		if(bounds != null) {
-			components.put(label, sid);
-			pages.get(currentPage).add(label, 
-					"pos " + label.getX() + " " + label.getY() + ", " +
-					"w " + label.getWidth() + 
-					", h " + label.getHeight());
+			label.setBounds(bounds);
+			pages.get(currentPage).add(label, sid);
 		}
 	}
 
@@ -262,11 +247,13 @@ public class FormRenderer {
 						reader.getLocalName().equals(XFDL_LINE))) {
 			
 			reader.next();
+			
 			if(reader.isStartElement()) {
 				if(reader.getLocalName().equals(XFDL_ITEMLOCATION)) {
 					pages.get(currentPage).addLine(processItemLocation());
 				}
 			}
+			
 		}
 		
 	}
@@ -279,10 +266,9 @@ public class FormRenderer {
 	 */
 	private void addPage() {
 		FormPanel page = new FormPanel();
-		page.setLayout(new MigLayout());
+		page.setLayout(null);
 		pages.add(page);
 		currentPage = pages.size() - 1;
-		components.put(page, reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID));		
 	}
 
 	/**
@@ -307,9 +293,11 @@ public class FormRenderer {
 						reader.getLocalName().equals(XFDL_ITEMLOCATION)))
 		{
 			reader.next();
+			
 			if(reader.isCharacters() && !reader.isWhiteSpace()) {
 				attributes.add(reader.getText());
 			}
+
 		}
 		
 		for(int x=0; x<attributes.size(); x++) {
@@ -348,9 +336,11 @@ public class FormRenderer {
 				reader.getLocalName().equals(XFDL_VALUE)) 
 		{
 			reader.next();
+			
 			if(reader.isCharacters()) {
 				result = reader.getText();
 			}
+
 		}
 		
 		return result;
@@ -373,7 +363,9 @@ public class FormRenderer {
 				!(reader.isEndElement() &&
 						reader.getLocalName().equals(XFDL_FONT))) 
 		{
+			
 			reader.next();
+			
 			if(reader.isCharacters() && !reader.isWhiteSpace()) {
 				attributes.add(reader.getText());
 			}
@@ -403,6 +395,9 @@ public class FormRenderer {
 			fontSize = 12;
 		}
 		
+	    int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+	    fontSize = (int)Math.round(fontSize * screenRes / 72.0);
+		
 		Font result = new Font(attributes.get(0), 
 				fontStyle, 
 				fontSize);
@@ -425,14 +420,5 @@ public class FormRenderer {
 	
 	public int getPageCount() {
 		return pages.size();
-	}
-	
-	/**
-	 * Retrieves a Map with a JComponent as a key and related XFDL SID as
-	 * a value.
-	 * @return Map of JComponent to XFDL SID.
-	 */
-	public Map<JComponent, String> getFields() {
-		return components;
 	}
 }
