@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamException;
 public class FormViewControl implements ActionListener {
 
 	private FormViewPane view;
-	private FormRenderer render;
+	XFDLDocumentDisplayer doc;
 	private int currentPage;
 	
 	public FormViewControl(FormViewPane view) {
@@ -56,16 +56,14 @@ public class FormViewControl implements ActionListener {
 	 * Disables the Next Page button if the view is at the last page.
 	 */
 	private void nextPagePushed() {
-		if(render != null) {
-			currentPage++;
-			view.scrollPane.setViewportView(render.getPage(currentPage));
+		currentPage++;
+		view.scrollPane.setViewportView(doc.getPage(currentPage).displayPage());
 			
-			if(render.getPageCount() - 1 == currentPage) {
+			if(doc.getPageCount() - 1 == currentPage) {
 				view.nextPage.setEnabled(false);
 			}
 			
 			view.previousPage.setEnabled(true);
-		}
 	}
 	
 	/**
@@ -74,19 +72,19 @@ public class FormViewControl implements ActionListener {
 	 * Disables the Previous Page button if the view is at the first page.
 	 */
 	private void previousPagePushed() {
-		if(render != null) {
-			currentPage--;
-			
-			view.scrollPane.setViewportView(render.getPage(currentPage));
-			
-			if(currentPage == 0) {
-				view.previousPage.setEnabled(false);
-			}
-			if(currentPage < render.getPageCount() - 1) {
-				view.nextPage.setEnabled(true);
-			}
+		currentPage--;
+
+		view.scrollPane.setViewportView(doc.getPage(currentPage).displayPage());
+
+		if(currentPage == 0) {
+			view.previousPage.setEnabled(false);
+		}
+		
+		if(currentPage < doc.getPageCount() - 1) {
+			view.nextPage.setEnabled(true);
 		}
 	}
+
 	
 	private void selectFormPushed() throws XMLStreamException, IOException {
 		final JFileChooser fc = new JFileChooser();
@@ -94,12 +92,13 @@ public class FormViewControl implements ActionListener {
 		
 		int retVal = fc.showOpenDialog(view);
 		if(retVal == JFileChooser.APPROVE_OPTION) {
-			render = new FormRenderer(fc.getSelectedFile().getAbsolutePath());
-			render.renderForm(this);
+			FormRenderer render = new FormRenderer(fc.getSelectedFile().getAbsolutePath());
 			
-			view.scrollPane.setViewportView(render.getPage(currentPage));		
+			doc = render.renderForm(this);
+			
+			view.scrollPane.setViewportView(doc.getPage(currentPage).displayPage());		
 
-			if(render.getPageCount() > 0) {
+			if(doc.getPageCount() > 1) {
 				view.nextPage.setEnabled(true);
 			}
 		}

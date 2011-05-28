@@ -3,7 +3,6 @@ import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.swing.JPanel;
 
@@ -23,14 +22,13 @@ public class FormPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = -5408728614801306159L;
-	
+
+	//Listing of all of the lines to be drawn on the form.
 	private ArrayList<Rectangle> lines;
-	private HashMap<Component, String> components;
 	
 	public FormPanel() {
 		lines = new ArrayList<Rectangle>();
-		components = new HashMap<Component, String>();
-		
+		this.setLayout(null);
 	}
 	
 	public void addLine(Rectangle line) {
@@ -38,17 +36,20 @@ public class FormPanel extends JPanel {
 	}
 	
 	/**
-	 * Overrides JPanel paintComponenet and draws lines on the form.
+	 * Overrides JPanel paintComponenet and draws lines on the page as well
+	 * as fills ComboBoxes, and Lists with appropriate values.
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		 
+		//Draw lines on the component
 		for(int x = 0; x<lines.size(); x++) {
 			g.fillRect(lines.get(x).x, 
 					lines.get(x).y, 
 					lines.get(x).width, 
 					lines.get(x).height);
 		}
+		
 	}
 	
 	/**
@@ -73,19 +74,5 @@ public class FormPanel extends JPanel {
 		
 		return super.add(component);
 	}
-	
-	/**
-	 * Adds a component with the specified SID
-	 * @param component Component to be added
-	 * @param sid SID of the component
-	 * @return Component to be added.
-	 */
-	public Component add(Component component, String sid) {
-		
-		components.put(component, sid);
-		
-		return super.add(component);
-	}
-
 
 }
