@@ -11,10 +11,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -23,7 +19,6 @@ import javax.xml.stream.XMLStreamReader;
 public class FormRenderer {
 
 	private XMLStreamReader reader;
-	private ArrayList<FormPanel> pages;
 	
 	private static final String FILE_HEADER_BLOCK = 
 		"application/vnd.xfdl;content-encoding=\"base64-gzip\""; 
@@ -82,8 +77,6 @@ public class FormRenderer {
 		
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		reader = inputFactory.createXMLStreamReader(gis);
-		
-		pages = new ArrayList<FormPanel>();
 	}
 	
 	/**
@@ -93,9 +86,11 @@ public class FormRenderer {
 	 * Controls (TextFields, Check Boxes, Radio buttons) are mapped to their
 	 * related SID value
 	 * @param control
-	 * @throws XMLStreamException Thrown if the there is a fault in the XML
+	 * @throws XMLStreamException Thrown if the 
+	 * there is a fault in the XML
 	 */
-	public XFDLDocumentDisplayer renderForm(ActionListener control) throws XMLStreamException {
+	public XFDLDocumentDisplayer renderForm(ActionListener control) 
+	throws XMLStreamException {
 		
 		XFDLDocumentDisplayer doc = new XFDLDocumentDisplayer();
 		
@@ -103,13 +98,14 @@ public class FormRenderer {
 			while(reader.hasNext()) {
 				if(reader.isStartElement()) {
 					if(reader.getLocalName().equals(XFDL_CELL)) {
-						//addCell();
+						doc.getPage(doc.getPageCount() - 1).addCell(addCell());
 					}
 					else if(reader.getLocalName().equals(XFDL_CHECK)) {
 						doc.getPage(doc.getPageCount() - 1).addItem(addCheck());
 					}
 					else if(reader.getLocalName().equals(XFDL_COMBOBOX)) {
-						//doc.getPage(doc.getPageCount() - 1).addItem(addComboBox());
+						doc.getPage(doc.getPageCount() - 1).addItem(
+							addComboBox(doc.getPage(doc.getPageCount() - 1)));
 					}
 					else if(reader.getLocalName().equals(XFDL_FIELD)) {
 						doc.getPage(doc.getPageCount() -1).addItem(addField());
@@ -121,7 +117,7 @@ public class FormRenderer {
 						doc.getPage(doc.getPageCount() - 1).addItem(addLine());
 					}
 					else if(reader.getLocalName().equals(XFDL_PAGE)) {
-						doc.addPage(addPage());
+						doc.addPage(addPage(doc));
 					}
 					
 				}
@@ -160,8 +156,8 @@ public class FormRenderer {
 					bounds = processItemLocation();
 				}
 				else if(reader.getLocalName().equals(XFDL_OPTION_VALUE)) {
-					value = processSimpleOption(XFDL_OPTION_VALUE)
-							.equals(XFDL_VALUE_TRUE);
+					String result = processSimpleOption(XFDL_OPTION_VALUE);
+					value = result.equals(XFDL_VALUE_TRUE);
 				}
 			}
 			
@@ -187,13 +183,12 @@ public class FormRenderer {
 	 * 
 	 * @throws XMLStreamException 
 	 */
-	private void addCell() throws XMLStreamException {
-		String sid;
-		String value = null;
-		String label = null;
-		String group = null;
+	private XFDLCell addCell() throws XMLStreamException {
+		String value = "";
+		String label = "";
+		String group = "";
 		
-		sid = reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID);
+		final String sid = reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID);
 		
 		while(reader.hasNext() && 
 				!(reader.isEndElement() && 
@@ -213,9 +208,8 @@ public class FormRenderer {
 			}
 		}
 		
-		if(sid != null && value != null && group != null) {
-//			pages.get(currentPage).addCellToGroup(value, label, sid, group);
-		}
+		return new XFDLCell(sid, value, label, group);
+		
 	}
 
 	/**
@@ -228,7 +222,7 @@ public class FormRenderer {
 	 * End State: Cursor is positioned on the <combobox> end element.
 	 * @throws XMLStreamException 
 	 */
-	private XFDLItem addComboBox() throws XMLStreamException {
+	private XFDLItem addComboBox(XFDLPage page) throws XMLStreamException {
 		
 		final String sid = reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID);
 		Rectangle bounds = INVALID_LOCATION;
@@ -238,7 +232,7 @@ public class FormRenderer {
 			
 		while(reader.hasNext() &&
 				!(reader.isEndElement() &&
-						reader.getLocalName().equals(XFDL_CHECK))) {
+						reader.getLocalName().equals(XFDL_COMBOBOX))) {
 			
 			reader.next();
 			
@@ -261,7 +255,7 @@ public class FormRenderer {
 		}
 		
 		if(!bounds.equals(INVALID_LOCATION)) {
-			return new XFDLComboBox(sid, bounds, groupName, value, font);
+			return new XFDLComboBox(sid, bounds, groupName, value, font, page);
 		} else { 
 			return new InvalidXFDLItem();
 		}
@@ -392,8 +386,8 @@ public class FormRenderer {
 	 * Start State: Cursor is on the <page> start element.
 	 * End State: Cursor does not change state in this method. 
 	 */
-	private XFDLPage addPage() {
-		return new XFDLPage(reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID));
+	private XFDLPage addPage(XFDLDocumentDisplayer doc) {
+		return new XFDLPage(reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID), doc);
 	}
 	
 	
@@ -540,10 +534,10 @@ public class FormRenderer {
 	 * 
 	 * Supports the following options: <group>, <value>
 	 * 
-	 * Start State: Cursor positioned on the <group> start element.
-	 * End State: Cursor positioned on the <group> end element.
+	 * Start State: Cursor positioned on the start element.
+	 * End State: Cursor positioned on the end element.
 	 * 
-	 * @return String value of the <group> options. Null if no value is found.
+	 * @return String value of the options. Null if no value is found.
 	 * @throws XMLStreamException
 	 */
 	private String processSimpleOption(String optionName) throws XMLStreamException {
@@ -559,6 +553,9 @@ public class FormRenderer {
 				result = reader.getText();
 			}
 	
+		}
+		if(result == null) 	{
+			System.err.println("WTF? Null result in processSimpleOption");
 		}
 		
 		return result;
