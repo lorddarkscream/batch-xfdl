@@ -4,8 +4,9 @@ public class InvalidXFDLItem implements XFDLItem {
 	private final String sid = "INVALID ITEM";
 	
 	public InvalidXFDLItem() {
-		
+		super();
 	}
+	
 	
 	@Override
 	public String getSID() {
