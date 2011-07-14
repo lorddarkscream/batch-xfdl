@@ -58,7 +58,7 @@ public class DA2062HeaderUpdateController implements ActionListener {
 		
 		//browse button for destination directory
 		else if(arg0.getSource().equals(view.destBrowseButton)) {
-			executeDesBrowsButton();
+			executeDestBrowseButton();
 		}
 		
 		//Turn header text fields on and off
@@ -213,7 +213,7 @@ public class DA2062HeaderUpdateController implements ActionListener {
 	 * Creates a JFileChooser and places the resulting folder selection
 	 * into the destination folder view.
 	 */
-	private void executeDesBrowsButton() {
+	private void executeDestBrowseButton() {
 		final JFileChooser fc = new JFileChooser();
 		fc.setFileFilter(new XFDLFileFilter());
 		fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

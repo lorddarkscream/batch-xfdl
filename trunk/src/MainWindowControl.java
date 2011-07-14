@@ -19,7 +19,8 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	public static final String COMMAND_SELECT_FORM = "SELECT_FORM";
 	public static final String COMMAND_SELECT_TASK = "SELECT_TASK";
 	
-	public static final String TASK_ALL_VIEW = "View Form";
+	public static final String TASK_ALL_VIEW = "View Form (Experimental)";
+	public static final String TASK_ALL_BATCH_CREATE_FORM = "Batch Create Form from Spreadsheet";
 	
 	public static final String TASK_DA1594_ADDPAGE = "Add Page";
 	
@@ -88,6 +89,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 					view.taskListModel.removeAllElements();
 					view.taskList.clearSelection();
 				}
+				view.taskListModel.addElement(TASK_ALL_BATCH_CREATE_FORM);
 				view.taskListModel.addElement(TASK_ALL_VIEW);
 				currentForm = FORM_CHOICE_GENERIC;
 			}
@@ -127,6 +129,13 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 						
 					}
 				}
+				if(currentForm == FORM_CHOICE_GENERIC) {
+					if(((JList)e.getSource()).getSelectedValue()
+							.equals(TASK_ALL_BATCH_CREATE_FORM)) {
+						changeActionPane(BatchCreatePane.newBatchCreatePane());
+						
+					}
+				}
 			} catch (Exception excp) {
 				JOptionPane.showMessageDialog(view, 
 						"Error Loading Task Pane.", 
@@ -139,7 +148,7 @@ public class MainWindowControl implements ItemListener, WindowListener, ListSele
 	private void changeActionPane(JPanel newAction) {
 		view.remove(view.actionContent);
 		view.actionContent = newAction;
-		view.add(view.actionContent, "w 900, top, height " + view.getHeight());
+		view.add(view.actionContent, "w 900, top, grow 100, height " + view.getHeight());
 		view.repaint();
 		view.actionContent.revalidate();
 	}

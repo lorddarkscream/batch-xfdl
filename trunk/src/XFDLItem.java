@@ -1,3 +1,8 @@
+import java.awt.Component;
+import java.awt.Container;
+
+import javax.swing.JPanel;
+
 /**
  * Generic interface for all XFDL Items that provides standard methods for 
  * Retrieving SID and a JComponent version of the item for display.
@@ -17,5 +22,13 @@ public interface XFDLItem {
 	 * @param page Page that can be displayed on a form.
 	 */	
 	public void addToPage(FormPanel page);
+	
+	
+	/**
+	 * Item adds a properly sized version of itself to the container (destination.add)
+	 * without any reference to it's location information.   
+	 */
+	public void addWithoutLocation(Container destination, String UIOptions);
+	
 	
 }
