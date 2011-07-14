@@ -50,3 +50,7 @@ At present there is no identifiable method to collect all of the fields and then
 
 ===Possible solution===
 Render the form in a java window and allow the user to drag and drop the columns they want to fill from into the fields they want filled. 
+
+I think that the above is probably the best solution, but requires a huge effort to implement the XFDL standard in the code, which hurts.  So until then I'm going to drop back and shoot for something more realistic.  
+
+Current plan is to display all of the fields in order down the page along with the SID, and hope that they are readable enough that people can figure out what they are trying to fill.  Testing will show if this is viable or not.
