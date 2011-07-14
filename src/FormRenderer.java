@@ -36,6 +36,7 @@ public class FormRenderer {
 	private static final String XFDL_OPTION_GROUP = "group";
 	private static final String XFDL_OPTION_ITEMLOCATION = "itemlocation";
 	private static final String XFDL_OPTION_VALUE = "value";
+	private static final String XFDL_OPTION_SCROLLHORIZ = "scrollhoriz";
 	
 	private static final String XFDL_LOCATION_STYLE_ABSOLUTE = "absolute";
 	private static final String XFDL_LOCATION_SIZE_EXTENT = "extent";
@@ -50,6 +51,7 @@ public class FormRenderer {
 	private static final Rectangle INVALID_LOCATION = new Rectangle();
 	private static final int DEFAULT_FONT_SIZE = 8;
 	private static final Font DEFAULT_FONT = new Font("Helvetica", Font.PLAIN, DEFAULT_FONT_SIZE);
+	private static final XFDLOptionScrollHoriz DEFAULT_SCROLL = XFDLOptionScrollHoriz.NEVER;
 	
 	
 	public FormRenderer(String inputFile) 
@@ -271,6 +273,7 @@ public class FormRenderer {
 		Rectangle bounds = INVALID_LOCATION;
 		Font font = DEFAULT_FONT;
 		String value = "";
+		XFDLOptionScrollHoriz scrollHoriz = DEFAULT_SCROLL;
 		
 		String sid = reader.getAttributeValue(null, XFDL_ATTRIBUTE_SID);
 		
@@ -290,6 +293,11 @@ public class FormRenderer {
 				}
 				else if(reader.getLocalName().equals(XFDL_OPTION_FONT)) {
 					font = processFont();
+				} 
+				else if(reader.getLocalName().equals(XFDL_OPTION_SCROLLHORIZ)) {
+					scrollHoriz = XFDLOptionScrollHoriz.valueOf(
+							processSimpleOption(
+									XFDL_OPTION_SCROLLHORIZ).toUpperCase());
 				}
 			}
 			
@@ -299,7 +307,7 @@ public class FormRenderer {
 			return new InvalidXFDLItem();
 		}
 		else {
-			return new XFDLField(sid, value, bounds, font);
+			return new XFDLField(sid, value, bounds, font, scrollHoriz);
 		}
 	}
 
@@ -537,11 +545,11 @@ public class FormRenderer {
 	 * Start State: Cursor positioned on the start element.
 	 * End State: Cursor positioned on the end element.
 	 * 
-	 * @return String value of the options. Null if no value is found.
+	 * @return String value of the options. Empty String ("") if no value is found.
 	 * @throws XMLStreamException
 	 */
 	private String processSimpleOption(String optionName) throws XMLStreamException {
-		String result = null;
+		String result = "";
 		
 		while(reader.hasNext() && 
 				!(reader.isEndElement() &&
@@ -552,10 +560,6 @@ public class FormRenderer {
 			if(reader.isCharacters()) {
 				result = reader.getText();
 			}
-	
-		}
-		if(result == null) 	{
-			System.err.println("WTF? Null result in processSimpleOption");
 		}
 		
 		return result;

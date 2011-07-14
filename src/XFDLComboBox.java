@@ -1,3 +1,4 @@
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.util.Iterator;
@@ -68,6 +69,39 @@ public class XFDLComboBox implements XFDLItem {
 		result.setModel(model);
 		
 		page.add(result);
+	}
+
+	@Override
+	public void addWithoutLocation(Container destination, String UIOptions) {
+		
+		JComboBox result = new JComboBox();
+		
+		result.setName(sid);
+		result.setSize(bounds.getSize());
+		result.setFont(font);
+		
+		DefaultComboBoxModel model = new DefaultComboBoxModel();
+		Iterator<XFDLCell> it = group.iterator();
+		while(it.hasNext()) {
+			XFDLCell cell = it.next();
+			String newItem;
+			
+			if(!cell.getLabel().isEmpty()) {
+				newItem = cell.getLabel();
+			} else {
+				newItem = cell.getValue();
+			}
+			
+			model.addElement(newItem);
+			
+			if(newItem.equals(value)) {
+				model.setSelectedItem(newItem);
+			}
+		}
+		
+		result.setModel(model);
+		
+		destination.add(result, UIOptions);
 	}
 
 }

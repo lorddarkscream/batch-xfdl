@@ -1,3 +1,4 @@
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.Rectangle;
 
@@ -33,6 +34,17 @@ public class XFDLLabel implements XFDLItem {
 		result.setFont(font);
 		
 		page.add(result);
+	}
+
+	@Override
+	public void addWithoutLocation(Container destination, String UIOptions) {
+		JLabel result = new JLabel(value);
+
+		result.setName(sid);
+		result.setSize(bounds.getSize());
+		result.setFont(font);
+
+		destination.add(result, UIOptions);
 	}
 
 }

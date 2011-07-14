@@ -28,7 +28,7 @@ public class MainWindow extends JFrame {
 		this.setSize(1200, 1000);
 		
 		//Border Layout for main window
-		this.setLayout(new MigLayout());
+		this.setLayout(new MigLayout("debug, fill", "[grow 0][grow 100]"));
 		
 		this.setTitle("Batch-XFLD");
 		this.addWindowListener(control);
